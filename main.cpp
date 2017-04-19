@@ -19,9 +19,9 @@ struct Quads{
 
 
 void addQuad(){
-    Q[0].state++; if(Q[0].state>4) { Q[0].state=1;}
+    Q[0].state++;
+    if(Q[0].state>4) { Q[0].state=1;}
     int st=Q[0].state;
-
     if(st==1) {Q[0].total++; cn =Q[0].total;}
     if(st==1                        ) {Q[cn].x1=cx; Q[cn].y1=cy; Q[cn].z1=cz;}
     if(st==1 ||st==2                ) {Q[cn].x2=cx; Q[cn].y2=cy; Q[cn].z2=cz;}
@@ -70,7 +70,27 @@ void drawGrid(){
 }
 
 void init() {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(35,1.0f,0.1f,1000);
+    glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.2,0.2,0.2,1);
+}
 
+void keyboard(unsigned char key, int x, int y ){
+    if(key=='w'){cz-=1;} if(key=='s'){cz+=1;} //forward, back
+    if(key=='s'){cx-=1;} if(key=='d'){cx+=1;} //left, right
+    if(key=='q'){cy-=1;} if(key=='z'){cy+=1;} //up, down
+
+    if(key==32){addQuad();} //space
+
+    if(key=='r') {Q[cn].r=1; Q[cn].g=0; Q[cn].b=0;}
+    if(key=='g') {Q[cn].r=0; Q[cn].g=1; Q[cn].b=0;}
+    if(key=='b') {Q[cn].r=0; Q[cn].g=0; Q[cn].b=1;}
+    if(key=='y') {Q[cn].r=1; Q[cn].g=1; Q[cn].b=0;}
+
+    glutPostRedisplay();
 }
 
 void display() {
@@ -93,7 +113,9 @@ int main (int argc, char **argv) {
     glutInitDisplayMode(GLUT_DOUBLE);
     glutInitWindowSize(800,600);
     glutCreateWindow("");
+    init();
     glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);
     glutMainLoop();
     return 0;
 }
